@@ -26,6 +26,10 @@ jobs:
       - uses: dorny/paths-filter@v3
         id: filter
         with:
+          # `every`: a file counts as code only if it matches ALL the patterns,
+          # so the negations exclude. The default (`some`) ORs them, and '**'
+          # would match every file, docs included.
+          predicate-quantifier: every
           filters: |
             code:
               - '**'

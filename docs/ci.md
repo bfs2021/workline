@@ -92,7 +92,8 @@ ecosystem's words:
   jobs wait for it (`needs:`) and are skipped with `if:`. A skipped job
   reports success, so the checks a branch protection requires still pass.
   Template: [ci/github/doc-only-skip.yml](../ci/github/doc-only-skip.yml).
-- **GitLab**: `rules: changes` on each heavy job, compared with the target
+- **GitLab**: `rules: changes` on each heavy job, listing the paths that can
+  alter the build (GitLab has no negated glob), compared with the target
   branch. Template:
   [ci/gitlab/doc-only-skip.gitlab-ci.yml](../ci/gitlab/doc-only-skip.gitlab-ci.yml).
 - **Never a workflow-level `paths-ignore`** on GitHub: the workflow does not

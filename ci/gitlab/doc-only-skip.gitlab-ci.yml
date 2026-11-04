@@ -2,19 +2,27 @@
 # include or copy into .gitlab-ci.yml. Not a workline job (docs/ci.md,
 # "A doc-only merge request").
 #
-# `rules: changes` tells what changed: the heavy job runs when a file
-# outside the docs changed, and always on the default branch. `compare_to`
-# makes the comparison with the target branch, not with the previous push.
+# `rules: changes` tells what changed. GitLab has no negated glob: paths
+# are OR-ed, so "**/*" would match the docs too. List the paths that can
+# alter the build (edit the list to your layout); a change to docs only
+# matches none and the job is skipped. `compare_to` compares with the
+# target branch, not with the previous push.
+# Any other pipeline (default branch, a branch without a merge request,
+# a tag) always builds.
 build:
   stage: build
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
       changes:
         paths:
-          - "**/*"
-          - "!docs/**/*"
-          - "!**/*.md"
+          - "src/**/*"
+          - "lib/**/*"
+          - "test/**/*"
+          - "tests/**/*"
+          - "*.{json,toml,yml,yaml,lock,mod,sum,gradle,txt,ini}"
+          - ".gitlab-ci.yml"
+          - ".gitlab/**/*"
         compare_to: refs/heads/$CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != 'merge_request_event'
   script:
     - echo "your build and tests here"
