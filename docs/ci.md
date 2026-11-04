@@ -80,6 +80,25 @@ then one that applies, with the write token and no AI key
   `WORKLINE_VERSION` at their top; update it to take a newer one.
   `workline version` in a job's log says which ran.
 
+## A doc-only merge request
+
+A change to docs only cannot change a build: a project's own heavy jobs
+(boards, on-device suites) need not run for it
+([#79](https://github.com/JN0V/workline/issues/79)). The way, in each
+ecosystem's words:
+
+- **GitHub**: a first job tells what changed
+  ([`dorny/paths-filter`](https://github.com/dorny/paths-filter)); the heavy
+  jobs wait for it (`needs:`) and are skipped with `if:`. A skipped job
+  reports success, so the checks a branch protection requires still pass.
+  Template: [ci/github/doc-only-skip.yml](../ci/github/doc-only-skip.yml).
+- **GitLab**: `rules: changes` on each heavy job, compared with the target
+  branch. Template:
+  [ci/gitlab/doc-only-skip.gitlab-ci.yml](../ci/gitlab/doc-only-skip.gitlab-ci.yml).
+- **Never a workflow-level `paths-ignore`** on GitHub: the workflow does not
+  start, the required checks stay pending forever and the pull request
+  cannot merge.
+
 ## Before any forge
 
 In the repository:

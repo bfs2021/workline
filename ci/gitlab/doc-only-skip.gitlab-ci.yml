@@ -1,0 +1,20 @@
+# Your own build and tests skipped on a doc-only merge request, on GitLab —
+# include or copy into .gitlab-ci.yml. Not a workline job (docs/ci.md,
+# "A doc-only merge request").
+#
+# `rules: changes` tells what changed: the heavy job runs when a file
+# outside the docs changed, and always on the default branch. `compare_to`
+# makes the comparison with the target branch, not with the previous push.
+build:
+  stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      changes:
+        paths:
+          - "**/*"
+          - "!docs/**/*"
+          - "!**/*.md"
+        compare_to: refs/heads/$CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - echo "your build and tests here"
